@@ -130,16 +130,6 @@ foreach(OBJ_PATH ${KERNEL_OBJ_PATHS})
   endif()
 endforeach()
 
-# Kernel target
-# add_custom_command(
-#   OUTPUT "${CMAKE_BINARY_DIR}/kernel/kernel"
-#   COMMAND ${LD} -z max-page-size=4096 -T ${CMAKE_SOURCE_DIR}/kernel/kernel.ld 
-#           -o "${CMAKE_BINARY_DIR}/kernel/kernel" ${KERNEL_LINK_OBJ_PATHS}
-#   COMMAND ${OBJDUMP} -S ${CMAKE_BINARY_DIR}/kernel/kernel > ${CMAKE_BINARY_DIR}/kernel/kernel.asm
-#   COMMAND ${OBJDUMP} -t ${CMAKE_BINARY_DIR}/kernel/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > ${CMAKE_BINARY_DIR}/kernel/kernel.sym
-#   DEPENDS ${KERNEL_OBJ_PATHS}
-#   COMMENT "Linking kernel"
-# )
 
 add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/kernel/kernel
@@ -165,8 +155,29 @@ add_custom_target(xv6_kernel ALL
 )
 
 # User library objects
-set(ULIB_SRCS ulib usys printf umalloc)
+set(ULIB_SRCS ulib printf umalloc)
 set(ULIB_OBJS "")
+
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/user/usys.S
+    COMMAND perl ${CMAKE_SOURCE_DIR}/user/usys.pl > ${CMAKE_BINARY_DIR}/user/usys.S
+    DEPENDS ${CMAKE_SOURCE_DIR}/user/usys.pl
+    COMMENT "Generating user/usys.S"
+)
+
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/user/usys.o
+    COMMAND ${CC}
+            ${COMMON_FLAGS}
+            -c
+            ${CMAKE_BINARY_DIR}/user/usys.S
+            -o
+            ${CMAKE_BINARY_DIR}/user/usys.o
+    DEPENDS ${CMAKE_BINARY_DIR}/user/usys.S
+    COMMENT "Assembling user/usys.S"
+)
+
+list(APPEND ULIB_SRCS usys)
 
 foreach(LIB ${ULIB_SRCS})
   set(SRC_PATH "${CMAKE_SOURCE_DIR}/user/${LIB}")
@@ -223,37 +234,124 @@ foreach(PROG ${UPROGS})
   )
 endforeach()
 
-# mkfs tool (native compilation)
+#
+# mkfs
+#
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/fsroot)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/mkfs)
+
 add_custom_command(
-  OUTPUT "${CMAKE_BINARY_DIR}/mkfs/mkfs"
-  COMMAND gcc -Wno-unknown-attributes -I${CMAKE_SOURCE_DIR} 
-          -o "${CMAKE_BINARY_DIR}/mkfs/mkfs" "${CMAKE_SOURCE_DIR}/mkfs/mkfs.c"
-  VERBATIM        
-  DEPENDS "${CMAKE_SOURCE_DIR}/mkfs/mkfs.c"
-  COMMENT "Building mkfs"
+    OUTPUT ${CMAKE_BINARY_DIR}/mkfs/mkfs
+
+    COMMAND gcc
+            -Wno-unknown-attributes
+            -I${CMAKE_SOURCE_DIR}
+            -o ${CMAKE_BINARY_DIR}/mkfs/mkfs
+            ${CMAKE_SOURCE_DIR}/mkfs/mkfs.c
+
+    DEPENDS ${CMAKE_SOURCE_DIR}/mkfs/mkfs.c
+
+    VERBATIM
+    COMMENT "Building mkfs"
 )
 
+#
+# fsroot staging area
+#
+
+set(FSROOT_FILES)
+
+#
+# README
+#
+
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/fsroot/README.md
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_SOURCE_DIR}/README.md
+            ${CMAKE_BINARY_DIR}/fsroot/README.md
+
+    DEPENDS ${CMAKE_SOURCE_DIR}/README.md
+)
+
+list(APPEND FSROOT_FILES
+     ${CMAKE_BINARY_DIR}/fsroot/README.md)
+
+#
+# Copy user binaries into fsroot
+#
+
+set(MKFS_INPUTS README.md)
+
+foreach(PROG ${UPROGS})
+
+    add_custom_command(
+        OUTPUT ${CMAKE_BINARY_DIR}/fsroot/_${PROG}
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${CMAKE_BINARY_DIR}/user/_${PROG}
+                ${CMAKE_BINARY_DIR}/fsroot/_${PROG}
+
+        DEPENDS ${CMAKE_BINARY_DIR}/user/_${PROG}
+
+        COMMENT "Staging _${PROG}"
+    )
+
+    list(APPEND FSROOT_FILES
+         ${CMAKE_BINARY_DIR}/fsroot/_${PROG})
+
+    list(APPEND MKFS_INPUTS
+         _${PROG})
+
+endforeach()
+
+#
 # fs.img
+#
+
 add_custom_command(
-  OUTPUT "${CMAKE_BINARY_DIR}/fs.img"
-  COMMAND "${CMAKE_BINARY_DIR}/mkfs/mkfs" "${CMAKE_BINARY_DIR}/fs.img" "${CMAKE_SOURCE_DIR}/README.md" ${UPROGS_BINS}
-  DEPENDS "${CMAKE_BINARY_DIR}/mkfs/mkfs" ${UPROGS_BINS} "${CMAKE_SOURCE_DIR}/README.md"
-  COMMENT "Building filesystem image"
+    OUTPUT ${CMAKE_BINARY_DIR}/fs.img
+
+    COMMAND ${CMAKE_COMMAND} -E chdir
+            ${CMAKE_BINARY_DIR}/fsroot
+            ${CMAKE_BINARY_DIR}/mkfs/mkfs
+            ${CMAKE_BINARY_DIR}/fs.img
+            ${MKFS_INPUTS}
+
+    DEPENDS
+        ${CMAKE_BINARY_DIR}/mkfs/mkfs
+        ${FSROOT_FILES}
+
+    VERBATIM
+    COMMENT "Building filesystem image"
 )
 
-# Main targets
-add_custom_target(user DEPENDS ${UPROGS_BINS})
-add_custom_target(fs.img DEPENDS "${CMAKE_BINARY_DIR}/fs.img")
-add_custom_target(mkfs DEPENDS "${CMAKE_BINARY_DIR}/mkfs/mkfs")
+#
+# Targets
+#
 
-# Build all
+add_custom_target(user
+    DEPENDS ${UPROGS_BINS}
+)
+
+add_custom_target(mkfs_tool
+    DEPENDS ${CMAKE_BINARY_DIR}/mkfs/mkfs
+)
+
+add_custom_target(filesystem_image
+    DEPENDS ${CMAKE_BINARY_DIR}/fs.img
+)
+
 add_custom_target(all_xv6 ALL
-  DEPENDS 
-    kernel
-    user
-    mkfs
-    fs.img
-  COMMENT "Build complete!"
+    DEPENDS
+        xv6_kernel
+        user
+        mkfs_tool
+        filesystem_image
+
+    COMMENT "Build complete!"
 )
 
 # QEMU targets
@@ -284,7 +382,7 @@ add_custom_target(qemu-gdb
 
 message(STATUS "")
 message(STATUS "Build targets:")
-message(STATUS "  cmake --build . --target kernel   # Build kernel only")
+message(STATUS "  cmake --build . --target xv6_kernel   # Build kernel only")
 message(STATUS "  cmake --build . --target user     # Build user programs")
 message(STATUS "  cmake --build . --target all_xv6  # Build everything")
 message(STATUS "  cmake --build . --target qemu     # Run in QEMU")
