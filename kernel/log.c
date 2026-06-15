@@ -7,6 +7,7 @@
 #include "fs.h"
 #include "buf.h"
 #include "assert.h"
+#include "bio.h"
 
 // Simple logging that allows concurrent FS system calls.
 //
