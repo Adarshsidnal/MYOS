@@ -12,6 +12,7 @@
 #include "file.h"
 #include "stat.h"
 #include "proc.h"
+#include "assert.h"
 
 struct devsw devsw[NDEV];
 struct {
@@ -48,8 +49,9 @@ struct file*
 filedup(struct file *f)
 {
   acquire(&ftable.lock);
-  if(f->ref < 1)
-    panic("filedup");
+  GDN_ASSERT(f->ref >= 1, "filedup: ref count should be positive");
+  // if(f->ref < 1)
+  //   panic("filedup");
   f->ref++;
   release(&ftable.lock);
   return f;
@@ -62,8 +64,9 @@ fileclose(struct file *f)
   struct file ff;
 
   acquire(&ftable.lock);
-  if(f->ref < 1)
-    panic("fileclose");
+  GDN_ASSERT(f->ref >= 1, "fileclose: ref count should be positive");
+  // if(f->ref < 1)
+  //   panic("fileclose");
   if(--f->ref > 0){
     release(&ftable.lock);
     return;

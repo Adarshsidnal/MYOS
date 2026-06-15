@@ -150,6 +150,7 @@ add_custom_command(
     COMMENT "Linking kernel"
 )
 
+
 add_custom_target(xv6_kernel ALL
     DEPENDS ${CMAKE_BINARY_DIR}/kernel/kernel
 )

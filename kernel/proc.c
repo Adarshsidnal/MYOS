@@ -415,7 +415,7 @@ kwait(uint64 addr)
 }
 
 // Per-CPU process scheduler.
-// Each CPU calls scheduler() after setting itself up.
+// Each CPU ca lls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
 //  - choose a process to run.
 //  - swtch to start running that process.

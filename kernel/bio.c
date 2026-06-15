@@ -22,6 +22,7 @@
 #include "defs.h"
 #include "fs.h"
 #include "buf.h"
+#include "assert.h"
 
 struct {
   struct spinlock lock;
@@ -106,8 +107,9 @@ bread(uint dev, uint blockno)
 void
 bwrite(struct buf *b)
 {
-  if(!holdingsleep(&b->lock))
-    panic("bwrite");
+  GDN_ASSERT(holdingsleep(&b->lock), "bwrite: buffer not locked");
+  // if(!holdingsleep(&b->lock))
+  //   panic("bwrite");
   virtio_disk_rw(b, 1);
 }
 
@@ -116,8 +118,10 @@ bwrite(struct buf *b)
 void
 brelse(struct buf *b)
 {
-  if(!holdingsleep(&b->lock))
-    panic("brelse");
+  GDN_ASSERT(holdingsleep(&b->lock), "brelse: buffer not locked");
+
+  // if(!holdingsleep(&b->lock))
+  //   panic("brelse");
 
   releasesleep(&b->lock);
 

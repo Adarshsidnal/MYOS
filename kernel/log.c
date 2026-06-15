@@ -6,6 +6,7 @@
 #include "sleeplock.h"
 #include "fs.h"
 #include "buf.h"
+#include "assert.h"
 
 // Simple logging that allows concurrent FS system calls.
 //
@@ -53,8 +54,7 @@ static void commit();
 void
 initlog(int dev, struct superblock *sb)
 {
-  if (sizeof(struct logheader) >= BSIZE)
-    panic("initlog: too big logheader");
+  GDN_ASSERT(sizeof(struct logheader) < BSIZE, "initlog: logheader too big");
 
   initlock(&log.lock, "log");
   log.start = sb->logstart;
@@ -151,8 +151,7 @@ end_op(void)
 
   acquire(&log.lock);
   log.outstanding -= 1;
-  if(log.committing)
-    panic("log.committing");
+  GDN_ASSERT(log.outstanding >= 0, "end_op: log.outstanding underflow");
   if(log.outstanding == 0){
     do_commit = 1;
     log.committing = 1;
