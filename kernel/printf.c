@@ -13,6 +13,7 @@
 #include "memlayout.h"
 #include "riscv.h"
 #include "defs.h"
+#include "console.h"
 #include "proc.h"
 
 volatile int panicking = 0; // printing a panic message

@@ -9,6 +9,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "console.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the

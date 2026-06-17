@@ -11,6 +11,9 @@
 
 #include <stdarg.h>
 
+
+#include "console.h"
+
 #include "types.h"
 #include "param.h"
 #include "spinlock.h"

@@ -1,0 +1,1 @@
+int   kexec(char*, char**);

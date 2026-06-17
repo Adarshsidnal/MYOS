@@ -18,9 +18,9 @@ struct superblock;
 // void            bunpin(struct buf*);
 
 // console.c
-void            consoleinit(void);
-void            consoleintr(int);
-void            consputc(int);
+// void            consoleinit(void);
+// void            consoleintr(int);
+// void            consputc(int);
 
 // exec.c
 int             kexec(char*, char**);
