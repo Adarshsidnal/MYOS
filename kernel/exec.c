@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "defs.h"
 #include "elf.h"
+#include "fs.h"
 #include "assert.h"
 #include "exec.h"
 
