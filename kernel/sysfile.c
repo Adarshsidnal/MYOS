@@ -266,7 +266,7 @@ create(char *path, short type, short major, short minor)
     return 0;
   }
 
-  if((ip = ialloc(dp->dev, type)) == 0){
+  if((ip = ialloc_fs(dp->dev, type)) == 0){
     iunlockput(dp);
     return 0;
   }

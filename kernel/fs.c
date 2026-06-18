@@ -200,7 +200,7 @@ static struct inode* iget(uint dev, uint inum);
 // Returns an unlocked but allocated and referenced inode,
 // or NULL if there is no free inode.
 struct inode*
-ialloc(uint dev, short type)
+ialloc_fs(uint dev, short type)
 {
   int inum;
   struct buf *bp;
