@@ -7,7 +7,7 @@
 #include "defs.h"
 #include "file.h"
 #include "exec.h"
-
+#include "kalloc.h"
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];

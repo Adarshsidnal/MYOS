@@ -6,7 +6,7 @@
 #include "file.h"
 #include "console.h"
 #include "bio.h"
-
+#include "kalloc.h"
 volatile static int started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.

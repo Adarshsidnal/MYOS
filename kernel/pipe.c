@@ -7,7 +7,7 @@
 #include "fs.h"
 #include "sleeplock.h"
 #include "file.h"
-
+#include "kalloc.h"
 #define PIPESIZE 512
 
 struct pipe {

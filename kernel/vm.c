@@ -7,7 +7,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "fs.h"
-
+#include "kalloc.h"
 /*
  * the kernel's page table.
  */
