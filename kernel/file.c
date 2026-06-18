@@ -11,9 +11,10 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "stat.h"
+#include "pipe.h"
 #include "proc.h"
 #include "assert.h"
-
+#include "log.h"
 struct devsw devsw[NDEV];
 struct {
   struct spinlock lock;

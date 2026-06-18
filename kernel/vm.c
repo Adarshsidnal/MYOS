@@ -8,6 +8,7 @@
 #include "proc.h"
 #include "fs.h"
 #include "kalloc.h"
+#include "printf.h"
 /*
  * the kernel's page table.
  */

@@ -20,6 +20,8 @@
 #include "fs.h"
 #include "buf.h"
 #include "file.h"
+#include "log.h"
+#include "printf.h"
 #include "bio.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))

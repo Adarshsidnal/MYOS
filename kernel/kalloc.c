@@ -10,6 +10,7 @@
 #include "spinlock.h"
 #include "riscv.h"
 #include "defs.h"
+#include "printf.h"
 #include "kalloc.h"
 
 void freerange(void *pa_start, void *pa_end);

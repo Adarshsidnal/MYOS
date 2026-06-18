@@ -16,6 +16,7 @@
 #include "buf.h"
 #include "virtio.h"
 #include "kalloc.h"
+#include "printf.h"
 // the address of virtio mmio register r.
 #define R(r) ((volatile uint32 *)(VIRTIO0 + (r)))
 

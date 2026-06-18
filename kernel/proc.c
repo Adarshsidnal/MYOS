@@ -8,6 +8,8 @@
 #include "file.h"
 #include "exec.h"
 #include "kalloc.h"
+#include "log.h"
+#include "printf.h"
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];

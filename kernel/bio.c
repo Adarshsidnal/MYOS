@@ -23,7 +23,7 @@
 #include "fs.h"
 #include "buf.h"
 #include "assert.h"
-
+#include "printf.h"
 struct {
   struct spinlock lock;
   struct buf buf[NBUF];
