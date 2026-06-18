@@ -9,6 +9,9 @@
 #include "fs.h"
 #include "kalloc.h"
 #include "printf.h"
+#include "string.h"
+#include "vm.h"
+
 /*
  * the kernel's page table.
  */

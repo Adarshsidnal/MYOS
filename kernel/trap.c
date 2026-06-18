@@ -6,6 +6,13 @@
 #include "proc.h"
 #include "defs.h"
 #include "printf.h"
+#include "syscall.h"
+#include "trap.h"
+#include "uart.h"
+#include "vm.h"
+#include "plic.h"
+#include "virtio_disk.h"
+
 struct spinlock tickslock;
 uint ticks;
 

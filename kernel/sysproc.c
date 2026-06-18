@@ -6,6 +6,8 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+#include "syscall.h"
+#include "trap.h"
 
 uint64
 sys_exit(void)

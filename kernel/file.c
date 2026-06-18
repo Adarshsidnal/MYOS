@@ -15,6 +15,7 @@
 #include "proc.h"
 #include "assert.h"
 #include "log.h"
+#include "vm.h"
 struct devsw devsw[NDEV];
 struct {
   struct spinlock lock;

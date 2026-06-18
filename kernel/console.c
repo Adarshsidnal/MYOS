@@ -24,6 +24,7 @@
 #include "riscv.h"
 #include "defs.h"
 #include "proc.h"
+#include "uart.h"
 
 #define BACKSPACE 0x100  // erase the last output character
 #define C(x)  ((x)-'@')  // Control-x

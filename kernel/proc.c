@@ -10,6 +10,12 @@
 #include "kalloc.h"
 #include "log.h"
 #include "printf.h"
+#include "string.h"
+#include "swtch.h"
+#include "trap.h"
+#include "vm.h"
+
+#define NELEM(x) (sizeof(x)/sizeof((x)[0]))
 
 struct cpu cpus[NCPU];
 

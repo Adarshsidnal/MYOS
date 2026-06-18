@@ -20,6 +20,12 @@
 #include "log.h"
 #include "pipe.h"
 #include "printf.h"
+#include "string.h"
+#include "syscall.h"
+#include "vm.h"
+
+#define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
 static int

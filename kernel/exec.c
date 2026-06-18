@@ -10,7 +10,8 @@
 #include "assert.h"
 #include "exec.h"
 #include "log.h"
-
+#include "string.h"
+#include "vm.h"
 static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
 
 // map ELF permissions to PTE permission bits.

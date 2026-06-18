@@ -7,7 +7,9 @@
 #include "syscall.h"
 #include "defs.h"
 #include "printf.h"
-
+#include "string.h"
+#include "vm.h"
+#define NELEM(x) (sizeof(x)/sizeof((x)[0]))
 // Fetch the uint64 at addr from the current process.
 int
 fetchaddr(uint64 addr, uint64 *ip)

@@ -23,6 +23,7 @@
 #include "log.h"
 #include "printf.h"
 #include "bio.h"
+#include "string.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 // there should be one superblock per disk device, but we run with

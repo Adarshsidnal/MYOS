@@ -8,7 +8,11 @@
 #include "bio.h"
 #include "kalloc.h"
 #include "proc.h" 
+#include "trap.h"
 #include "printf.h"
+#include "vm.h"
+#include "plic.h"
+#include "virtio_disk.h"
 volatile static int started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.

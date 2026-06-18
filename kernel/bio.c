@@ -24,6 +24,8 @@
 #include "buf.h"
 #include "assert.h"
 #include "printf.h"
+#include "virtio_disk.h"
+
 struct {
   struct spinlock lock;
   struct buf buf[NBUF];
