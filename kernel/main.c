@@ -3,6 +3,7 @@
 #include "memlayout.h"
 #include "riscv.h"
 #include "defs.h"
+#include "file.h"
 #include "console.h"
 #include "bio.h"
 

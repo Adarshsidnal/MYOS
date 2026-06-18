@@ -26,13 +26,13 @@ struct superblock;
 // int             kexec(char*, char**);
 
 // file.c
-struct file*    filealloc(void);
-void            fileclose(struct file*);
-struct file*    filedup(struct file*);
-void            fileinit(void);
-int             fileread(struct file*, uint64, int n);
-int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, uint64, int n);
+// struct file*    filealloc(void);
+// void            fileclose(struct file*);
+// struct file*    filedup(struct file*);
+// void            fileinit(void);
+// int             fileread(struct file*, uint64, int n);
+// int             filestat(struct file*, uint64 addr);
+// int             filewrite(struct file*, uint64, int n);
 
 // fs.c
 void            fsinit(int);
